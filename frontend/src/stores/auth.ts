@@ -7,6 +7,21 @@ interface User {
   email: string
 }
 
+interface Address {
+  street: string;
+  suite: string;
+  city: string;
+  zipcode: string;
+  lat: string;
+  lng: string;
+}
+
+interface Company {
+  name: string;
+  catchPhrase: string;
+  bs: string;
+}
+
 interface AuthState {
   user: User | null
   token: string | null
@@ -14,11 +29,17 @@ interface AuthState {
 }
 
 export const useAuthStore = defineStore('auth', {
-  state: (): AuthState => ({
-    user: null,
-    token: localStorage.getItem('token'),
-    isAuthenticated: !!localStorage.getItem('token')
-  }),
+  state: (): AuthState => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    }
+    return {
+      user: null,
+      token: token,
+      isAuthenticated: !!localStorage.getItem('token')
+    }
+  },
 
   actions: {
     async login(email: string, password: string) {
@@ -37,9 +58,27 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async register(name: string, email: string, password: string) {
+    async register(
+      name: string,
+      username: string,
+      email: string,
+      password: string,
+      phone: string,
+      website: string,
+      address: Address,
+      company: Company
+    ) {
       try {
-        await axios.post('/api/auth/register', { name, email, password })
+        await axios.post('/api/auth/register', {
+          name,
+          username,
+          email,
+          password,
+          phone,
+          website,
+          address,
+          company
+        })
       } catch (error) {
         throw new Error('Registration failed')
       }
@@ -54,14 +93,16 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async checkAuth() {
-      if (!this.token) return false
-
-      try {
-        const response = await axios.get('/api/auth/me')
-        this.user = response.data
-        this.isAuthenticated = true
-        return true
-      } catch (error) {
+      if (this.token) {
+        try {
+          await axios.get('/api/auth/validate')
+          this.isAuthenticated = true
+          return true
+        } catch (error) {
+          this.logout()
+          return false
+        }
+      } else {
         this.logout()
         return false
       }

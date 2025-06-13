@@ -66,8 +66,8 @@ public class TestUtil {
     public static User createTestUser() {
         User user = new User();
         user.setName("Test User");
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
+        user.setUsername("testuser_" + java.util.UUID.randomUUID().toString().substring(0, 8));
+        user.setEmail("testuser_" + java.util.UUID.randomUUID().toString().substring(0, 8) + "@example.com");
         user.setPassword("password123");
         user.setPhone("123-456-7890");
         user.setWebsite("test.com");
@@ -122,11 +122,11 @@ public class TestUtil {
         return user;
     }
 
-    public static String generateTestToken(JwtTokenProvider tokenProvider, String username) {
+    public static String generateTestToken(JwtTokenProvider tokenProvider, String email) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                username,
+                email,
                 null,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"))
         );
         return tokenProvider.generateToken(authentication);
     }

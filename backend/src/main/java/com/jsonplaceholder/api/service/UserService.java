@@ -26,12 +26,12 @@ public class UserService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
         );
@@ -39,12 +39,12 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User createUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username is already taken!");
-        }
-
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email is already in use!");
+        }
+
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username is already taken!");
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());

@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-container">
       <h2>Login</h2>
-      <form @submit.prevent="handleLogin" class="login-form">
+      <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">Email</label>
           <input

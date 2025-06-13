@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 
@@ -47,6 +48,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        
+        // Exclude authentication endpoints and public GET /api/users from JWT filter
+        return (path.equals("/api/auth/login") || path.equals("/api/auth/register")) ||
+               (path.equals("/api/users") && HttpMethod.GET.matches(method));
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

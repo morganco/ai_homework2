@@ -75,9 +75,9 @@ public class AuthControllerIntegrationTest {
 
         // Create UserDetails for authentication
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                testUser.getUsername(),
+                testUser.getEmail(),
                 testUser.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"))
         );
 
         // Create Authentication object
@@ -101,7 +101,7 @@ public class AuthControllerIntegrationTest {
 
         // Create test login request
         testLoginRequest = new LoginRequest();
-        testLoginRequest.setUsername(testUser.getUsername());
+        testLoginRequest.setEmail(testUser.getEmail());
         testLoginRequest.setPassword("password123");
     }
 
@@ -117,7 +117,7 @@ public class AuthControllerIntegrationTest {
     @Test
     void login_WithInvalidCredentials_ShouldReturnUnauthorized() throws Exception {
         LoginRequest invalidLogin = new LoginRequest();
-        invalidLogin.setUsername(testUser.getUsername());
+        invalidLogin.setEmail(testUser.getEmail());
         invalidLogin.setPassword("wrongpassword");
 
         mockMvc.perform(post("/api/auth/login")

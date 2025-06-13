@@ -152,31 +152,32 @@ class UserServiceTest {
     @Test
     void loadUserByUsername_WhenUserExists_ShouldReturnUserDetails() {
         // Arrange
-        String username = "testuser";
+        String email = testUser.getEmail();
         User user = new User();
-        user.setUsername(username);
+        user.setUsername("testuser");
         user.setPassword("encodedPassword");
-        user.setEmail("test@example.com");
+        user.setEmail(email);
         user.setName("Test User");
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         // Act
-        UserDetails result = userService.loadUserByUsername(username);
+        UserDetails result = userService.loadUserByUsername(email);
 
         // Assert
         assertNotNull(result);
-        assertEquals(username, result.getUsername());
+        assertEquals(email, result.getUsername());
         assertEquals("encodedPassword", result.getPassword());
         assertTrue(result.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
+        verify(userRepository).findByEmail(email);
     }
 
     @Test
     void loadUserByUsername_WhenUserDoesNotExist_ShouldThrowException() {
-        when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.empty());
 
-        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername(testUser.getUsername()));
-        verify(userRepository).findByUsername(testUser.getUsername());
+        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername(testUser.getEmail()));
+        verify(userRepository).findByEmail(testUser.getEmail());
     }
 } 

@@ -2,22 +2,22 @@
   <div class="app">
     <header class="header">
       <h1>User Management System</h1>
+      <nav>
+        <router-link to="/login">Login</router-link>
+        <router-link to="/register">Register</router-link>
+      </nav>
     </header>
     <main class="main">
-      <UserTable />
+      <router-view />
     </main>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import UserTable from './components/UserTable.vue'
 
 export default defineComponent({
   name: 'App',
-  components: {
-    UserTable
-  }
 })
 </script>
 

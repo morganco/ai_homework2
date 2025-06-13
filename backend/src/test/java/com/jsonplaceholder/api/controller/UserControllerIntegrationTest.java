@@ -18,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -47,6 +48,9 @@ public class UserControllerIntegrationTest {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private User testUser;
     private String authToken;
     private UserRequest testUserRequest;
@@ -62,16 +66,16 @@ public class UserControllerIntegrationTest {
         testUser.setName("Test User");
         testUser.setUsername("testuser_" + uniqueId);
         testUser.setEmail(uniqueId + "@example.com");
-        testUser.setPassword("password123");
+        testUser.setPassword(passwordEncoder.encode("password123"));
         testUser.setPhone("123-456-7890");
         testUser.setWebsite("test.com");
         testUser = userRepository.save(testUser);
 
         // Create UserDetails for authentication
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                testUser.getUsername(),
+                testUser.getEmail(),
                 testUser.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"))
         );
 
         // Create Authentication object
