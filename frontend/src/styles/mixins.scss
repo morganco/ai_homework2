@@ -1,0 +1,148 @@
+// Flexbox mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Responsive mixins
+@mixin responsive($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  }
+  @if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  }
+  @if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  }
+  @if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  }
+}
+
+// Typography mixins
+@mixin heading-1 {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: $text-color;
+}
+
+@mixin heading-2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: $text-color;
+}
+
+@mixin body-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: lighten($text-color, 30%);
+}
+
+// Button mixins
+@mixin button-base {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: white;
+
+  &:hover {
+    background-color: $primary-dark;
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: $error-color;
+  color: white;
+
+  &:hover {
+    background-color: $error-dark;
+  }
+}
+
+// Card mixins
+@mixin card {
+  background: white;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-sm;
+  padding: $spacing-lg;
+}
+
+// Animation mixins
+@mixin fade-in {
+  animation: fadeIn $transition-normal;
+}
+
+@mixin slide-in {
+  animation: slideIn $transition-normal;
+}
+
+// Form mixins
+@mixin input-base {
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  font-size: 1rem;
+  transition: border-color $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+// Utility mixins
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color;
+    border-radius: 4px;
+
+    &:hover {
+      background: $text-color;
+    }
+  }
+} 
